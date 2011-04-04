@@ -101,7 +101,7 @@ if (/% [*]*EXPORTENDS:/){#close current output file and resume previous one ...
                          $OLDOUT=$OUT;
                          close($OUT);
                          $OUT=$filestack[--$filetop];
-                         print "Closing $OLDOUT because of $_, popping to $OUT\n";
+                         #print "Closing $OLDOUT because of $_, popping to $OUT\n";
                          next;
  }
 if (/% [*]*TOPLEVEL/){#close current output file and resume previous one ...
@@ -119,7 +119,18 @@ if (/% [*]*EXPANDEDINCLUDEONLY/){ print $OUT "\\includeonly{"; next;};
 if (/% [*]*ENDEXPANDEDINCLUDEONLY/){ print $OUT "}"; next;};
 if (/% [*]*INCLUDEONLYFILE:/){$_=~s/% [*]*INCLUDEONLYFILE://; chop; print $OUT $_,","; next;};
 if (/% [*]*EXPANDEDBIBSTYLE: /){ ~s/% [*]*EXPANDEDBIBSTYLE: //; print $OUT $_; next;};
-if (/% [*]*EXPANDEDBIBFILE: /){ ~s/% [*]*EXPANDEDBIBFILE: //; print $OUT $_; next;};
+if (/% [*]*EXPANDEDBIBFILE: /){
+                               ~s/% [*]*EXPANDEDBIBFILE: //; print $OUT $_; # restore \bibliography line
+			       # restore characters preceding this directive
+			       $tmp=$_;
+			       $tmp=~s/% [*]*EXPANDEDBIBFILE:.*$//; chop $tmp; print $OUT $tmp;
+			       # restore the original input/include line before switching output file
+			       $_=<>;
+			       if (!(/% [*]*EXPORTBEGS:/)) {die "Not in texexpand -x format!";};
+			       ~s/% [*]*EXPORTBEGS: \\bibliography{([^}]*)}/\1/; $OUTPATH=$_; # extract the name of the .bbl file
+			       # now switch otput file ... 
+			       &switchOutFile();
+                               next;};
 #
 # Otherwise, output the current line
 #
