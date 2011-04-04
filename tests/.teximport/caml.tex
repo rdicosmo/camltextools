@@ -1,0 +1,222 @@
+In \ocamlpiiil, as described in the seminal paper~\cite{Ocamlp3lMlw98},
+we provide, for any user program, 3 possible semantics: 
+\begin{description}
+  \item[sequential] the user program is linked against a sequential implementation
+                    of the skeletons, so the resulting executable can be run on
+                    a single machine, as a single process, and easily debugged using
+                    standard debugging techniques and tools for sequential programs
+  \item[parallel]  the user program is linked against a parallel implementation
+                   of the skeletons, and the resulting executable is a generic
+                   SPMD program that can be deployed on a parallel machine, a cluster,
+                   or a network of workstations
+  \item[graphical] the user program is linked against a graphical implementation of
+                   the skeletons, so that the resulting programs, when executed, 
+                   display a picture of the parallel computational network that is
+                   deployed when running the parallel implementation.
+\end{description}
+Of course, our goal is to guarantee that the sequential and the parallel execution of
+any user program do produce the same results.
+
+\section{Skeletons as parametric stream processors}
+
+In \ocamlpiiil, skeletons are \emph{compositional}, and, in the parallel implementation, 
+a  skeleton is clearly realized as a \emph{stream processor},
+i.e.\  a function transforming the input stream of incoming data into an output stream of
+outgoing data, and is parameterized by some other functions and/or stream processors.
+
+Of course, we want this fact to be apparent in the sequential implementation as well,
+so the type of skeletons is that of stream processors, and we provide an abstract type
+\verb|'a stream| of streams, on which the sequential implementation of the skeletons is
+built.
+
+\subsection{The skeleton combinators in OcamlP3l}
+The basic building blocks of the skeleton language 
+implemented within this current release of \ocamlpiiil\ are basically of four kinds:
+\begin{itemize}
+\item \textit{task parallel} skeletons, modelling parallelism
+  exploited between \textit{independent} processing activities
+  relative to different input data. In this set we have: pipe
+  and farm, that correspond to
+  the usual task parallel skeletons appearing both in \pppl\ 
+  and in other skeleton models
+  \cite{cole-th,ic-parle-93-1, darli-to-1}.
+\item \textit{data parallel} skeletons, modelling parallelism exploited
+  computing different parts of the same input
+  data. In this set, we provide \verb|mapvector| and
+  \verb|reducevector|. 
+  Such skeletons are not yet as powerful as the
+  \verb|map| and \verb|reduce| skeletons of \pppl. Instead, they are quite similar to
+  the map($*$) and reduce ($/$) functionals of the Bird-Meertens formalism
+  discussed in \cite{bird1} and the \textsf{map} and \textsf{fold} skeletons in SCL
+\cite{darli-to-1}. The \texttt{mapvector} skeleton models the parallel application of
+a generic function $f$ to all the items of a vector data structure,
+whereas the reducevector skeleton models a parallel computation folding all
+the elements of a vector with a commutative and associative binary
+operator $\oplus$). 
+\item a \textit{control} skeleton, \verb|loop| which is not parallel \textit{per se},
+      but is necessary to iterate the execution of other skeletons 
+
+\item two \textit{interface} skeletons, that allow to freely move back and forth
+      bewteen the parallel and sequential worlds: \verb|seq| converts a sequential
+      function into a one node parallel computation network,
+      and \verb|parfun| converts a parallel computation network into a
+      stream processing function
+
+\item a \textit{parallel execution scope delimiter}, given by the function \verb|pardo| that
+      must contain all code that invokes a \verb|parfun| 
+\end{itemize}
+
+\subsection{Skeleton syntax, semantics and types}
+
+We briefly describe here the syntax, informal semantics and types for
+each of the skeletons in the system. First of all, let's discuss the fact that the
+actual types used in the sequential implementation of the skeletons are
+polluted by a certain amount of \verb|unit| types, with respect to the types
+one would expect. We can discuss the reason of this choice by examining the case
+of the simplest skeleton, \verb|seq|, that allows the encapsulation of an \ocaml\ function $f$ into
+a sequential process which applies $f$ to all the inputs received in
+the output stream. Any \ocaml\ function with type 
+\begin{center}
+  \verb1 f: 'a -> 'b 1
+\end{center}
+\noindent can be encapsulated in an instance of the seq
+skeleton as follows:
+\begin{center}
+  \verb|seq(f)|
+\end{center}
+and we would expect then \verb|seq| to have the type \verb|('a -> 'b) -> 'a stream -> 'b stream|
+but in the library, we find \verb|(unit -> 'a -> 'b) -> unit -> 'a stream -> 'b stream|
+instead. This is due to the fact that, in real-world application, the user functions may
+need to hold a sizeable amount of local data, like the huge matrices that are initialised in
+the numerical application described further on, and we need to allow the user to tell whether
+\begin{itemize}
+  \item this data is initialised \emph{globally} once and then replicated in every copy of the stream processor that
+        may be performed by a \verb|farm| or a \verb|mapvector| skeleton; this was the case of
+	the previous versions of \ocamlpiiil, where one could write
+\begin{alltt}
+let f = let localdata = do_huge_intialisation_step ()
+        in fun x -> compute (localdata,x);;
+\ldots{}
+farm(seq(f),10)
+\end{alltt}
+%
+  \item this data is initialised \emph{locally} by each stream processor \emph{after} the
+        copy performed by a \verb|farm| or a \verb|mapvector| skeleton; this was not possible
+        in the previous versions of \ocamlpiiil, but it is easily achievable with the new types
+%
+\begin{alltt}
+let f () = let localdata = do_huge_intialisation_step ()
+           in fun x -> compute (localdata,x);;
+\ldots{}
+farm(seq(f),10)
+\end{alltt}
+%
+        now, when the \verb|farm| skelton creates $10$ copies of \verb|seq(f)|, each copy is
+        created by passing $()$ to \verb|seq|, which in turn passes $()$ to $f$, producing
+        the allocation of a different copy of $localdata$ for each instance\footnote{The initialization step may do weird, non referential transparent things, like opening file descriptors or network connections to other services, that we
+do not want to be shared at all by the different instances of the user function.}.
+        Notice that the old behaviour, namely, a global initialisaztion shared among all copies, is
+        still easily achievable by writing
+%
+\begin{alltt}
+let f = let localdata = do_huge_intialisation_step ()
+        in fun () -> fun x -> compute (localdata,x);;
+\ldots{}
+farm(seq(f),10)
+\end{alltt}
+%
+\end{itemize}
+
+To sum up, the extra \verb|unit| parameters give the programmer the possibility to choose whether local
+initialisation data in his user functions is shared among all copies or not. In other words, we can regard
+the skeleton combinators in the current version of \ocamlpiiil\ as ``delayed skeletons'', or ``skeleton factories'',
+producing\emph{an instance} of a skeleton every time they are passed an argument $()$ of type \verb|unit|.
+
+We can now detail the other skeletons:
+
+\begin{description}
+\item[Farm] The farm skeleton, written \texttt{farm},
+  computes in parallel a function $f$ over different data items
+  appearing onto its input stream.  From a functional viewpoint, given
+  a stream of data items $x_1, \ldots , x_n$, $\texttt{farm}(F,k)$
+  computes $f(x_1), \ldots, f(x_n)$ ($F$ being the skeleton
+  parameter).  Parallelism is exploited by having $k$ independent,
+  parallel processes computing $f$ on different items of the input
+  stream. \\
+  If $F$ has type \texttt{(unit -> 'b stream -> 'c stream)}, and $n:\texttt{int}$, then 
+  $farm(F,n)$ has type \texttt{unit -> 'b stream -> 'c stream}
+
+\item[Pipeline skeleton] The pipeline skeleton, denoted by the infix
+  operator \verb1|||1, performs in parallel the computations relative
+  to different stages of a function over different data items of the
+  input stream. Functionally, $F_1 \verb1|||1 F_2 \ldots \verb1|||1
+  F_N$ computes $f_n(\ldots f_2(f_1(x_i))\ldots)$ over all the data
+  items $x_i$ belonging to the input stream. Parallelism is exploited
+  by having $n$ independent parallel processes. Each process computes
+  a function $f_i$ over the data items produced by process computing
+  $f_{i-1}$ and delivers results to process computing $f_{i+1}$.
+  If $F_1$ has type \texttt{(unit -> 'a stream -> 'b stream)}, and $F_1$ has type \texttt{(unit -> 'b stream -> 'c stream)},
+  then $F_1|||F_2$ has type \texttt{unit -> 'a stream -> 'c stream}
+\marginpar{Pierre: tu veux mettre c,a en forme de regles d'inference?}
+\item[Map skeleton] The map skeleton, written \texttt{mapvector},
+  computes in parallel a function over all the data items of a vector,
+  generating a new vector. Therefore, for each vector $X$ appearing
+  onto the input data stream, $\texttt{mapvector}(F,n)$ computes the
+  function $f$ over all the items of the vector, using $n$ different,
+  parallel processes computing $f$ over distinct vector items.
+
+  If $F$ has type \texttt{(unit -> 'a stream -> 'b stream)}, and $n:\texttt{int}$, then 
+  $mapvector(F,n)$ has type \texttt{unit -> 'a array stream -> 'b array stream}
+
+\item[Reduce skeleton] The reduce skeleton, denoted by the keyword
+  \texttt{reducevector}, folds a function over all the data items of a
+  vector. Therefore, $\texttt{reducevector}(F,n)$ computes $ x_1 f x_2
+  f \ldots f x_n$ out of the vector $x_1, \ldots ,x_n$, for each one
+  of the vectors appearing onto the input data stream. The computation
+  is performed using $n$ different, parallel processes computing $f$.
+
+  If $F$ has type \texttt{(unit -> 'a * 'a stream -> 'a stream)}, and $n:\texttt{int}$, then 
+  $reducevector(F,n)$ has type \texttt{unit -> 'a array stream -> 'a stream}
+\end{description}
+
+\begin{figure}[htbf]
+\begin{alltt}
+val seq : ?col:int -> (unit -> 'a -> 'b) -> unit -> 'a stream -> 'b stream
+val ( ||| ) :
+  (unit -> 'a stream -> 'b stream) ->
+  (unit -> 'b stream -> 'c stream) -> unit -> 'a stream -> 'c stream
+val loop :
+  ?col:int ->
+  ('a -> bool) * (unit -> 'a stream -> 'a stream) ->
+  unit -> 'a stream -> 'a stream
+val farm :
+  ?col:int ->
+  ?colv:'a list ->
+  (unit -> 'b stream -> 'c stream) * int ->
+  unit -> 'b stream -> 'c stream
+val mapvector :
+  ?col:int ->
+  ?colv:'a list ->
+  (unit -> 'b stream -> 'c stream) * int ->
+  unit -> 'b array stream -> 'c array stream
+val reducevector :
+  ?col:int ->
+  ?colv:'a list ->
+  (unit -> ('b * 'b) stream -> 'b stream) * int ->
+  unit -> 'b array stream -> 'b stream
+\end{alltt}
+\caption{The types of the \ocamlpiiil\ skeleton combinators }
+\end{figure}
+
+\subsection{ The  {\tt parfun} construction }
+
+\begin{alltt}
+val parfun :
+  (unit -> unit -> 'a stream -> 'b stream) -> 'a stream -> 'b stream
+val pardo : (unit -> 'a) -> 'a
+\end{alltt}
+
+\subsection{ Structure of the program }\label{f11}
+\subsection{ Balancing load: colors }
+
+\section{Using the system}

@@ -1,0 +1,27 @@
+\setlength{\unitlength}{1.5mm}
+
+\begin{picture}(90,50)(0,0)
+  \allinethickness{0.5mm}
+  \qbezier(15,25)(25,32.5)(45,32.5)
+  \qbezier(45,32.5)(57.5,32.5)(65,40)
+  \drawline(65,40)(70,25)(60,15)
+  \dashline[+50]{2}(60,15)(50,10)(35,10)(25,15)
+  \drawline(25,15)(15,25)
+
+  \allinethickness{0.2mm}
+  \dashline[+50]{2}(70,45)(66,41)(71,25)(80,20)
+  \dashline[+50]{2}(80,19)(71,24)(61,14)(65,5)
+  \dashline[+50]{2}(20,5)(24,14)(14,24)(0,20)
+
+  \put(45,22){\makebox(0,0){$\Omega_i$}}
+  \put(35,35){\makebox(0,0){$\Gamma_i$}}
+  \put(65,30){\makebox(0,0){$\Sh{ij_1}$}}
+  \put(65,20){\makebox(0,0)[br]{$\Sh{ij_2}$}}
+  \put(20,20){\makebox(0,0)[bl]{$\Sh{ij_{n_i}}$}}
+  \put(80,35){\makebox(0,0){$\Omega_{j_1}$}}
+  \put(75,10){\makebox(0,0){$\Omega_{j_2}$}}
+  \put(10,10){\makebox(0,0){$\Omega_{j_{n_i}}$}}
+  \put(69,32){\makebox(0,0)[bl]{$\Sh{j_1i}$}}
+  \put(66,19){\makebox(0,0)[tl]{$\Sh{j_2i}$}}
+  \put(19,19){\makebox(0,0)[tr]{$\Sh{j_{n_i}i}$}}
+\end{picture}

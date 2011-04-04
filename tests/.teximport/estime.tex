@@ -1,0 +1,622 @@
+\section{The coupling problem}
+%
+% description of the numerical problem
+% on explique que le parallelisme n'etait pas un but primaire de la manip
+
+Let $\Omega$ be a convex domain in $\run^d,\,\, d=2$ or $3$, and we denote by
+$\Gamma=\partial \Omega$ the boundary of $\Omega$. We suppose that the flow in
+$\Omega$ is governed by a conservation equation together with Darcy's law
+relating the gradient of the pressure $p$ to the Darcy velocity ${\bf u}$:
+\begin{equation}\label{prob}\begin{array}{rllll}
+\div\,{\bf u} &=& q &\qquad\mbox{in }\Omega\\
+{\bf u} &=& -{\bf K }\nab\,p   &\qquad\mbox{in }\Omega\\
+p&=&\ovl{p}&\qquad\mbox{on }\Gamma,
+\end{array}\end{equation}
+where $p$ is the pressure, 
+      ${\bf u}$ the Darcy velocity, 
+      ${\bf K}$ the hydraulic conductivity (or permeability) tensor,
+      $q$ a source term and
+      $\overline{p}$ the given pressure on the boundary $\Gamma$.
+We suppose that ${\bf K}$ is a symmetric, positive definite and uniformly
+bounded tensor.
+
+Let $\Omega$ be decomposed into $n$ non-overlapping subdomains, also called
+blocks, $\Omega_i, i\in I=\{1,2,\ldots,n\}$, and we denote by $\Gamma_{i}$ the
+part of the boundary of $\Omega_{i},\, i \in I$ in common with the boundary of
+$\Omega$. Hence,
+\[
+\bar\Omega = \bigcup_{i\in I} \bar\Omega_i, 
+\quad \mbox{ and } \quad 
+\Gamma_{i} = \partial\Omega_{i}\cap\Gamma,\quad i \in I = \{1,2,\ldots,n\},
+\]
+where $\bar\Omega_i$ is the closure of the open set $\Omega_i$.
+Let $\Sigma_{i}$ be the geometric {\it internal boundary} of $\Omega_i$, i.e.
+the interior of the internal boundary of $\Omega_i$, and $\Sigma$ the union of
+all internal boundaries.
+\[
+\Sigma_{i} = \stackrel{\circ}{\ovl{(\p \Omega_i \backslash \p \Omega)}},\quad i
+\in I, \qquad \Sigma = \bigcup_{i \in I} \Sigma_{i}.
+\]
+Then we can define the geometric {\it interface between subdomains} $\Omega_i$ and $\Omega_j$ as 
+\[
+\Sigma_{ij} = \Sigma_{ji} = \Sigma_{i} \cap  \Sigma_{j}, \qquad \Sigma_{ii} = \emptyset,
+\quad i, j \in I.
+\]
+If $\Sigma_{ij} \neq \emptyset$, the subdomains $\Omega_i$ and $\Omega_j, \ 
+i \neq j \in I$, are called neighbors. 
+
+Let $\nu_i$ denote the external unit normal to $\Omega_i, i \in I$. We denote
+the $L^2(\Omega_i)$ or $(L^2(\Omega_i))^d$ the inner product by $(\cdot,
+\cdot)_{i}$. In these notations, we omit the subscript $i$ to refer to the
+entire domain $\Omega$. Let the interface inner product on $L^2(\Sigma_i)$ be
+denoted by $\bral\cdot, \cdot \brar_i$ and on $L^2(\Sigma_{ij})$ by $\bral
+\cdot, \cdot \brar_{ij}$. Note that if $\Sigma_{ij}=\emptyset$, this inner
+product is zero.
+
+We denote by $p_i,{\bf u}_i,{\bf K}_i,$ and $q_i$ the restrictions of $p,{\bf
+  u},{\bf K},$ and $q$ respectively to $\Omega_{i},\, i \in I$, and by
+$\ovl{p}_i$ the restriction of $\ovl{p}$ to $\Gamma_i,\, i \in I$.  We can
+rewrite the above problem (\ref{prob}) as a transmission or multiblock problem:
+\begin{equation}\label{probt}\begin{array}{rllll}
+\div \,{\bf u}_i &=& q_i &\qquad\mbox{in }\Omega_{i},&i \in I,\\
+{\bf u}_i &=& -{\bf K}_i\nab\,p_i &\qquad\mbox{in }\Omega_{i},&i \in I,\\
+p_i &=& \ovl{p}_i &\qquad\mbox{on }\Gamma_{i},&i \in I,
+\end{array}\end{equation}
+together with transmission conditions
+\begin{equation}\label{interftrans}\begin{array}{rllll}
+p_i &=& p_j &\qquad\mbox{on }\Sigma_{ij},&i,j \in I,\\
+{\bf u_i \cdot  \nu_i} &=& - {\bf u_j \cdot \nu_j}
+          &\qquad\mbox{on }\Sigma_{ij},&i,j \in I.\\ 
+\end{array}\end{equation}
+
+The two equations in (\ref{interftrans}) yield the continuity of pressure and of normal 
+velocity (as $\nu_i = -\nu_j$) across each interface $\Sigma_{ij} (\neq \emptyset)$ 
+between two neighboring subdomains 
+$\Omega_i$ and $\Omega_j, \ i,j \in I$. These interface equations can be rewritten 
+with Robin conditions. 
+
+Let $\alpha_{ij} > 0$ and $\alpha_{ji} > 0$ be the
+Robin coefficients on the interface $\Sigma_{ij} = \Sigma_{ji} , \ i,j \in I$. 
+First, multiply the first equation by $\alpha_{ij}$ and substract the second equation. 
+Second, multiply the first equation by $\alpha_{ji}$ and add the second equation. 
+Thus the two equations in (\ref{interftrans}) are equivalent to the Robin
+interface conditions 
+
+\begin{equation}\label{interfrob}\begin{array}{rllll}
+- {\bf u_i \cdot \nu_i}  + \alpha_{ij} p_i 
+&=& 
+{\bf u_j \cdot  \nu_j} + \alpha_{ij} p_j 
+&\qquad\mbox{on }\Sigma_{ij},&i,j \in I,\\
+- {\bf u_j \cdot  \nu_j} + \alpha_{ji} p_j 
+&=& 
+{\bf u_i \cdot  \nu_i}  + \alpha_{ji} p_i 
+&\qquad\mbox{on }\Sigma_{ij},&i,j \in I.\\
+\end{array}\end{equation}
+
+Clearly the solution to (\ref{prob}) satisfies (\ref{probt}) and (\ref{interftrans}) or 
+equivalently (\ref{probt}) and (\ref{interfrob}). Conversely, by elliptic regularity,
+the solution to (\ref{probt}) and (\ref{interfrob}) satisfies (\ref{prob}), so the two 
+formulations are equivalent.
+
+\subsection{Weak multiblock problem}
+Throughout the rest of this section, for simplicity, we will assume that
+homogeneous Dirichlet boundary conditions are imposed on $\p \Omega$: 
+$\ovl{p} = 0 \mbox{ on }\Gamma$.
+
+Let us define the approximation spaces used in this paper.
+\begin{equation}\begin{array}{lll}
+  {\bf Z_i} = \Hdiv{\Omega_i},&i \in I. & 
+{\bf Z} = \dps \bigoplus_{i \in I}  {\bf  Z_i} \not \subset \Hdiv{\Omega} . \\
+  N_i = L^2(\Omega_i),&i \in I. & N = \dps \bigoplus_{i \in I} N_i =  L^2(\Omega). \\
+  \Lambda_i = L^2(\Sigma_i),&i \in I. & \Lambda = \dps \bigoplus_{i \in I} \Lambda_i. \\
+\end{array}\end{equation}
+
+With these notations, we can write the mixed formulation. A weak solution 
+of (\ref{probt})-(\ref{interfrob}) 
+is a couple $({\bf u}, p) \in  {\bf Z} \times N$ such that for each 
+$i \in I$, $p_i|_{\Sigma_i} \in \Lambda_i$, and
+${\bf u_i \cdot \nu_i}|_{\Sigma_i}  \in \Lambda_i$, and 
+ \begin{equation}\label{probtw}\begin{array}{rcll}
+\left( K^{-1}{\bf u},\, {\bf v} \right)_{i} - 
+\left( \div\; {\bf v}, \, p \right)_{i}  & = & \dps 
+- \bral {\bf v \cdot  \nu_i} , \, p_{i} \brar_{i},  & {\bf v} \in {\bf Z_{i}}, \\
+\left( \div\; {\bf u}, \, r \right)_{i} &= &
+ \left(q_i, \, r \right)_{i},  & r \in N_{i},\\
+\dps \sum_{j \in I} \bral - {\bf u_{i} \cdot  \nu_i}  + \alpha_{ij} p_i  , 
+\, \mu_{i} \brar_{ij} & = & 
+\dps \sum_{j \in I} \bral {\bf u_{j} \cdot  \nu_j}  + \alpha_{ij} p_j  , 
+\, \mu_{i} \brar_{ij},  & \mu_{i} \in \Lambda_{i}.\\
+\end{array}\end{equation}
+
+\subsection{Meshes on the subdomains}
+Let $\Th{i}$ be a conforming finite element partition of the subdomain
+$\Omega_i,\ i \in I$, where the maximal element diameter is bounded by the real
+$h>0$, and the interior of each element face (or edge in 2D) are entirely
+contained in $\Sigma_i$ or in $\Gamma_i = \p \Omega_i \cap \p \Omega$.  The
+meshes of two neighboring subdomains need not match at their interface
+$\Sigma_{ij}$.
+
+Let us now define more precisely the interface meshes. We have seen that two
+subdomains are called {\it neighbors} if their interface $\Sigma_{ij} \neq
+\emptyset$. For $i \in I$, we denote the number of neighbors of a subdomain
+$\Omega_i$ by $n_i$, and we denote the set of indices of these neighbors by
+$\Nui{i} = \{j_1, j_2, \ldots, j_{n_i}\}$. The sets $I$ and $\Nui{i}$ inherit
+the natural order on $\nun$. Thus $k \in {1,2,\ldots, n_i} \mapsto j_k \in
+\Nui{i}$ is increasing.  For an $i \in I$ and a $j \in \Nui{i}$, the trace on
+$\Sigma_{ij}$ of the mesh $\Th{i}$ of $\Omega_{i}$ is denoted by $\Sh{ij}$.  In
+the same way, for a $j \in I$ and an $i \in \Nui{j}$, the trace on $\Sigma_{ji}
+= \Sigma_{ij}$ of the mesh $\Th{j}$ is denoted by $\Sh{ji}$.  In general
+$\Sh{ji} \neq \Sh{ij}, i \neq j$, as the meshes $\Th{i}$ and $\Th{j}$ do not
+match. (See Figure~\ref{f:dom})
+
+\begin{figure} [htbp]
+  \begin{center}
+\input{domaine.tex}\end{center}
+  \caption{Subdomain~$\Omega_i$, its neighbors and the interface meshes.}
+  \label{f:dom}
+\end{figure}
+
+
+We denote by $\Sh{i}$ the trace on $\Sigma_{i}$ of the mesh $\Th{i}$ of
+$\Omega_i$.  It is also the union of all the interface meshes coming from the
+subdomain $\Omega_i$. We call the mesh $\Sh{i}$ the {\it inner interface mesh}
+of $\Omega_i$.
+
+\[
+\forall i \in I,\ \forall j \in \Nui{i} \quad \Sh{ij} = \Th{i}|_{\Sigma_{ij}}. 
+\qquad \Sh{i} = \biguplus_{j\in \Nui{i}} \Sh{ij}. 
+\]
+
+The set of the ordered couples of neighbors is denoted by $\Nui{} = \{ (i,j), i
+\in I, j \in \Nui{i}\}$. It is ordered according to lexicographic order on
+$\nun^2$. We denote by $s$ the permutation
+\[
+\forall (i,j) \in \Nui{}, \quad s(i,j) = (j,i) \in \Nui{}. 
+\]
+
+We call {\it inner interface structure} $\Sh{}$ of the domain $\Omega$ the
+union of all inner interface meshes (each geometric interface is thus counted
+twice). It is ordered by $\Nui{}$.
+\[
+\Sh{} = \biguplus_{i \in I} \Sh{i} = \biguplus_{i \in I}\biguplus_{j\in \Nui{i}} \Sh{ij}
+= \biguplus_{(i,j) \in \Nui{}} \Sh{ij}.
+\]
+
+Up to now, we have defined the interface meshes that were seen from a subdomain
+$\Omega_i$. Now, we define the interface meshes of the neighbors of $\Omega_i$.
+For $(i,j) \in \Nui{}$, we denote $\tilde \Sh{ij} =\Sh{ji}$. We denote by
+$\tilde \Sh{i}$ the {\it outer interface mesh} of the subdomain $\Omega_i$ that
+is the union of the interface meshes that are the traces of the neighbors of
+$\Omega_i$. It is also ordered by $\Nui{i}$.
+\[
+\tilde \Sh{i} = \biguplus_{j\in \Nui{i}} \tilde \Sh{ij} = \biguplus_{j\in \Nui{i}} \Sh{ji}. 
+\]
+In the same way, we denote by $\tilde\Sh{}$ the {\it outer interface structure}
+of the domain $\Omega$ that is the union of all outer interface meshes. It is
+also the union of all interface meshes, seen from a subdomain or its neighbor,
+but this time it is ordered by $s(\Nui{})$,
+\[
+\tilde \Sh{} = \biguplus_{i \in I} \tilde\Sh{i}  
+=\biguplus_{i \in I}\biguplus_{j\in \Nui{i}} \tilde\Sh{ij}
+=\biguplus_{i \in I}\biguplus_{j\in \Nui{i}} \Sh{ji}
+= \biguplus_{(i,j) \in s(\Nui{})} \Sh{ij}.
+\]
+
+\subsection{Discrete weak multiblock problem}
+Let 
+\[ {\bf Z_{h,i}} \times N_{h,i} \times \Lambda_{h,i} 
+\subset  {\bf Z_{i}} \times N_{i} \times \Lambda_{i} , \quad i \in I,
+\]
+be the usual mixed finite element approximation made of Raviart-Thomas (and
+Nedelec in 3D) spaces of lowest order (\cite{ravtho}, \cite{robtho},
+\cite{ned86}), with the hybrid Lagrange multiplier spaces $\Lambda_{h,i}$ on 
+$\Sigma_i$, \cite{brefor}. We recall that
+$Z_{h,i}$ consists of some linear vector functions and that $N_{h,i}$ 
+(respectively $\Lambda_{h,i}$) are 
+made up of cellwise (resp. facewise in 3D or edgewise in 2D) constant scalar functions. 
+Let 
+\[ 
+{\bf Z_{h}} = \bigoplus_{i \in I} {\bf Z_{h,i}}, \qquad 
+N_{h} = \bigoplus_{i \in I}N_{h,i}, \qquad 
+\Lambda_{h}= \bigoplus_{i \in I}\Lambda_{h,i}.
+\]
+We also recall that
+\[  \div {\bf Z_{h,i}} = N_{h,i} \qquad \Lambda_{h,i} 
+= {\bf Z_{h,i} \cdot \nu_{i}}|_{\Sigma_i} = P_0(\Sh{i}), \quad i \in I,
+\]
+where $P_0(\Sh{i})$ denotes the space of facewise (or edgewise in 2D) constant
+functions on $\Sh{ij}$.
+
+One can notice that the space $\Lambda_{h}$ contains two interface unknows on
+each interface $\Sigma_{ij}, i \in I, j \in \Nui{i}$: the one that lives in
+$P_0(\Sh{ij})$, and the other one that lives in $P_0(\Sh{ji})=
+P_0(\tilde\Sh{ij})$.  As we did in the previous section for the interface
+meshes, we introduce on the geometric interface between two subdomains
+$\Sigma_{ij}$ two different approximation spaces $\Lambda_{h,ij}$ and $\tilde
+\Lambda_{h,ij} =\Lambda_{h,ji}$.
+\begin{equation}\begin{array}{rcl}
+    \Lambda_{h,ij} & = & {\bf Z_{h,i} \cdot \nu_{i}}|_{\Sigma_{ij}} =
+    P_0(\Sh{ij}), 
+    \quad i \in I, \ j \in \Nui{i} \quad (\mbox{i.e. } (i,j) \in \Nui{}), \\ 
+    \tilde\Lambda_{h,ij} =
+    \Lambda_{h,ji} & = & {\bf Z_{h,j} \cdot \nu_{j}}|_{\Sigma_{ij}} =
+    P_0(\Sh{ji}), \quad j \in I, \ i \in \Nui{j}.
+\end{array}\end{equation}
+Next we define the space $\tilde \Lambda_{h,i}$ that contains the functions on
+the interface meshes $\tilde \Sh{i}$ of the neighbors of $\Omega_i,\ i \in I$.
+This yields
+\begin{equation}\begin{array}{rclcll}
+\Lambda_{h,i} & = &  \dps \bigoplus_{j \in \Nui{i}}\Lambda_{h,ij} 
+ & = &{\bf Z_{h,i} \cdot \nu_{i}}|_{\Sigma_i} 
+= P_0(\Sh{i}), &\quad i \in I, \\
+\tilde\Lambda_{h,i} & = & \dps \bigoplus_{j \in \Nui{i}} \tilde\Lambda_{h,ij} 
+=  \bigoplus_{j \in \Nui{i}} \Lambda_{h,ji}
+& = &{\bf Z_{h,j} \cdot \nu_{j}}|_{\Sigma_i} 
+= P_0(\tilde \Sh{i})
+, & \quad i \in I,
+\end{array}\end{equation}
+and
+\begin{equation}\begin{array}{rcl}
+\Lambda_{h} & = & \dps \bigoplus_{i \in I}\Lambda_{h,i}
+= \bigoplus_{i \in I} \bigoplus_{j \in \Nui{i}} \Lambda_{h,ij} 
+= \bigoplus_{(i,j) \in \Nui{} } \Lambda_{h,ji}, \\
+\tilde\Lambda_{h} & = & \dps \bigoplus_{i \in I}\tilde\Lambda_{h,i}
+= \bigoplus_{i \in I} \bigoplus_{j \in \Nui{i}} \tilde\Lambda_{h,ij} 
+= \bigoplus_{i \in I} \bigoplus_{j \in \Nui{i}} \Lambda_{h,ji}
+= \bigoplus_{(i,j) \in s(\Nui{}) } \Lambda_{h,ji}.
+\end{array}\end{equation}
+
+We write the discrete mixed finite element approximation for the original
+problem (\ref{prob}) or, equivalently, for the transmission problem 
+(\ref{probtw}) introducing interelement multipliers $\lambda_{h,i}$ 
+(see \cite{MR95j:65161}, \cite{MR2001h:65140} and references therein). 
+
+We seek $({\bf u_h}, p_h, \lambda_h) \in {\bf Z_h} \times N_h \times \Lambda_h$
+such that
+\begin{equation}\label{probtwd}\begin{array}{rcll}
+\left( K^{-1}{\bf u_h},\, {\bf v} \right)_{i} - 
+\left( \div\; {\bf v}, \, p_h \right)_{i}  & = & \dps 
+- \bral {\bf v \cdot  \nu_i} , \, \lambda_{h,i} \brar_{i},  & {\bf v} \in {\bf Z_{h,i}}, \\
+\left( \div\; {\bf u_h}, \, r \right)_{i} &= &
+ \left(q_i, \, r \right)_{i},  & r \in N_{h,i},\\
+\dps \sum_{j \in \Nui{i}} \bral - {\bf u_{h,i} \cdot  \nu_i}  + 
+\alpha_{ij} \lambda_{h,i}  , 
+\, \mu_{i} \brar_{ij} & = & 
+\dps \sum_{j \in \Nui{i}} \bral {\bf u_{h,j} \cdot  \nu_j}  + 
+\alpha_{ij} \lambda_{h,j}  , 
+\, \mu_{i} \brar_{ij},  & \mu_{i} \in \Lambda_{h,i}.\\
+\end{array}\end{equation}
+
+It is proved that this problem (\ref{probtwd}) is well-posed in
+\cite{MR98j:76083} and in \cite{vfcement-1999} for the finite volume method. It
+is pointed out in \cite{MR98j:76083} that local mass conservation is insured
+everywhere except on the interfaces. There is continuity of the normal
+velocity ${\bf u \cdot \nu}$ across every element faces (or edges in 2D) that
+does \emph{not lie on $\Sigma$}. This is the price to pay the non-matching meshes. The
+flux is not conserved across any portion of $\Sigma$, but since $\mu_i = 1 \in
+\Lambda_{h,i}$, we continue to conserve the mass globally.
+
+A simple method to solve this problem (\ref{probtwd}) is to solve iteratively
+the fixed point problem (\ref{probtwditer}). Given a $x^{0}_{h} \in
+\Lambda_{h}$, where the superscript is used for the iteration $k \geq 0$ in the
+method, solve iteratively
+
+Compute $x^{k+1}_{h,i}|_{\Sigma_{ij}} =  
+{\bf u^{k+1}_{h,i} \cdot \nu_i}  + \alpha_{ij} \lambda^{k+1}_{h,i} 
+\quad j \in \Nui{i}$,  such that
+ 
+$({\bf u^{k+1}_{h,i}}, p^{k+1}_{h,i}, \lambda^{k+1}_{h,i}) 
+\in {\bf Z_{h,i}} \times N_{h,i} \times \Lambda_{h,i}$
+is the solution of 
+\begin{equation}\label{probtwditer}\begin{array}{rcll}
+\left( K^{-1}{\bf u^{k+1}_h},\, {\bf v} \right)_{i} - 
+\left( \div\; {\bf v}, \, p^{k+1}_h \right)_{i}  & = & \dps 
+- \bral {\bf v \cdot \nu_i} , \, \lambda^{k+1}_{h,i} \brar_{i},  & {\bf v} 
+\in {\bf Z_{h,i}}, \\
+\left( \div\; {\bf u^{k+1}_h}, \, r \right)_{i} &= &
+ \left(q_i, \, r \right)_{i},  & r \in N_{h,i},\\
+\dps \sum_{j \in \Nui{i}} \bral - {\bf u^{k+1}_{h,i} \cdot \nu_i}  + 
+\alpha_{ij} \lambda^{k+1}_{h,i}  , 
+\, \mu_{i} \brar_{ij} & = & 
+\dps \sum_{j \in \Nui{i}} \bral x^{k}_{h,i}  , 
+\, \mu_{i} \brar_{ij},  & \mu_{i} \in \Lambda_{h,i}.\\
+\end{array}\end{equation}
+
+When the method has converged, the Robin interface conditions (\ref{interfrob})
+are imposed weakly, and thus the solution of (\ref{probtwd}) is reached. It is
+proved in \cite{vfcement-1999} that this fixed point method converges. One can
+notice that it is non-symmetric eventhough the Laplace operator is symmetric.
+It is advisable to accelerate the convergence with a non-symmetric Krylov
+method, such as a BiCGStab or a GMRes method.
+
+\subsection{Interface operators}
+
+In order to clearly define the fixed point problem% and algorithm
+, we introduce
+discrete Robin to Robin operators ${S}_i$ in each subdomain $\Omega_i$ defined
+by (\ref{steklovrob:def}).
+
+\begin{equation}\label{steklovrob:def}\begin{array}{rlll}
+{S}_i : \Lambda_{h,i} \times N_{h,i} & \longrightarrow & \Lambda_{h,i}, &\quad i \in I \\
+{S}_i(x_{h,i} , q_i )|_{\Sigma_{ij}}  & = & 
+{\bf u_{h,i} \cdot  \nu_i} + \alpha_{ij} p_{h,i},  &\quad i \in I, 
+\quad \forall j \in \Nui{i},
+\end{array}\end{equation}
+such that ${\bf u_{h,i}}(x_h), p_{h,i}(x_h)$ is the solution of the following problem
+(\ref{steklovrobw}) set on $\Omega_i, \ i \in I$.
+
+We seek $({\bf u_{h,i}}, p_{h,i}, \lambda_{h,i}) \in {\bf Z_{h,i}} \times
+N_{h,i} \times \Lambda_{h,i}$ such that
+\begin{equation}\label{steklovrobw}\begin{array}{rcll}
+\left( K^{-1}{\bf u_{h,i}},\, {\bf v} \right)_{i} - 
+\left( \div\; {\bf v}, \, p_{h,i} \right)_{i}  & = & \dps 
+- \bral {\bf v \cdot  \nu_i} , \, \lambda_{h,i} \brar_{i}, 
+& {\bf v} \in {\bf Z_{h,i}}, \\
+\left( \div\; {\bf u_{h,i}}, \, r \right)_{i} &= &
+ \left(q_i, \, r \right)_{i},  & r \in N_{h,i},\\
+\dps \sum_{j \in \Nui{i}} \bral - {\bf u_{h,i} \cdot  \nu_i}  
++ \alpha_{ij} \lambda_{h,i}  , 
+\, \mu_{i} \brar_{ij} & = & 
+\dps \sum_{j \in \Nui{i}} \bral x_{h,ij}  , 
+\, \mu_{i} \brar_{ij},  & \mu_{i} \in \Lambda_{h,i}.\\
+\end{array}\end{equation}
+
+For a pair of neighbors $(\Omega_i, \Omega_j), \ (i,j) \in \Nui{}$, we define a
+projection operator and a restriction operator in (\ref{e:Pij}) and in
+(\ref{e:Rij}) that are defined on the interface between the subdomains. For a
+subdomain $\Omega_i \ i \in I$, we define a restriction operator and a
+projection operator in (\ref{e:Ri}) and in (\ref{e:Pi}) that are defined on the
+internal boundary of the subdomain.
+
+Let $P_{i\rightarrow j}$ be the $L^2$-projection operator onto $\tilde
+\Lambda_{h,ij} = \Lambda_{h,ji}$. With this operator one can project the
+$\lambda_{ij} \in \Lambda_{h,ij}$ onto $\tilde \Lambda_{h,ij}$.
+\begin{equation}  \label{e:Pij}\begin{array}{rcll}
+P_{i\rightarrow j} : L^2(\Sigma_{ij}) & \longrightarrow &  \tilde \Lambda_{h,ij}, \\
+\dps  x_{ij} & \longmapsto & P_{i\rightarrow j} x_{ij} & \mbox{ such that } \\
+\bral x_{ij} -  P_{i\rightarrow j} x_{ij}, \tilde \mu_{ij} \brar_{ij} 
+& = & 0, & \quad \tilde \mu_{ij} \in  \tilde \Lambda_{h,ij}.
+\end{array}\end{equation}
+
+
+Define also the restriction operator from $\Lambda_{h,i}$ onto $\Lambda_{h,ij}$
+\begin{equation} \label{e:Rij}\begin{array}{rcll}
+  R_{ij}: \Lambda_{h,i} & \longrightarrow &  \Lambda_{h,ij}, \\
+\lambda_i = \left(  \lambda_{ij_1}, 
+      \lambda_{ij_2}, 
+      \ldots,
+      \lambda_{ij_{n_i}}
+  \right)^{\top} 
+ \mbox{ on } \Sh{i}  &  \longmapsto & \lambda_{ij} \mbox{ on } \Sh{ij}.
+\end{array}\end{equation}
+
+For a $i \in I$ we also define two restriction operators: one from
+$\Lambda_{h}$ onto $\Lambda_{h,i}$, the other one from $\tilde \Lambda_{h}$
+onto $\tilde \Lambda_{h,i}$.
+\begin{equation} \label{e:Ri}\begin{array}{rcll}
+  R_{i}: \Lambda_{h} & \longrightarrow &  \Lambda_{h,i}, \\
+\lambda = \left(  \lambda_{1}, 
+      \lambda_{2}, 
+      \ldots,
+      \lambda_{n}
+  \right)^{\top} 
+ \mbox{ on } \Sh{}  & \longmapsto  & \lambda_{i} \mbox{ on } \Sh{i}.\\
+\tilde R_{i}: \tilde \Lambda_{h} & \longrightarrow &  \tilde \Lambda_{h,i}, \\
+\tilde\lambda = \left( \tilde \lambda_{1}, 
+     \tilde \lambda_{2}, 
+     \ldots,
+     \tilde \lambda_{n}
+  \right)^{\top} 
+ \mbox{ on } \tilde \Sh{}  & \longmapsto  & 
+\tilde \lambda_{i} \mbox{ on } \tilde \Sh{i}.
+\end{array}\end{equation}
+By an abuse of notation, we use $s$ as a permutation from $\Lambda_{h}$ onto
+$\tilde \Lambda_{h}$:
+\begin{equation} \label{e:symm}\begin{array}{rcll}
+s:\Lambda_{h} & \longrightarrow &  \tilde \Lambda_{h}, \\
+s(\lambda_{h}) & = & \tilde \lambda_{h}.
+\end{array}\end{equation}
+
+
+Define also, for a $i \in I$, the projection operator from $L^2(\Sigma_i)$ onto
+$\tilde \Lambda_{h,i}$. With this operator, one can project $\Lambda_{h,i}$
+that lives on the {\it inner} boundary interface onto the {\it outer} boundary
+interface $\tilde \Lambda_{h,i}$. 
+\begin{equation} \label{e:Pi}\begin{array}{rcll}
+  P_{i}: L^2(\Sigma_i) & \longrightarrow & 
+\tilde \Lambda_{h,i},\\
+\dps  x_{i} = \left(  x_{ij_1}, 
+      x_{ij_2}, 
+      \ldots,
+      x_{ij_{n_i}}
+  \right)^{\top} & \longmapsto & 
+\left( P_{i\rightarrow j_1} x_{ij_1}, 
+ P_{i\rightarrow j_2} x_{ij_2},
+\ldots,
+ P_{i\rightarrow j_n} x_{ij_n}
+\right)^{\top}. \\
+\end{array}\end{equation}
+
+In all these notations, to solve the problem (\ref{probtwd}), it suffices to
+find $\lambda_h \in \Lambda_h$ solution of the fixed point problem
+(\ref{fixedpoint2}). The matrix-free matrix vector product that is necessary in
+a Krylov method (such as BiCGStab) can be easily implemented in this form
+(\ref{fixedpoint2}).
+\begin{equation} \label{fixedpoint2}
+  \mbox{Id}_{\Lambda_h} \lambda_{h} -
+  s \left( \sum_{i \in I} \tilde R_i^{\top} P_i S_i (R_i \lambda_h, 0 ) \right) =
+  s \left(\sum_{i \in I} \tilde R_i^{\top} P_i S_i ( 0, q|_{\Omega_i} ) \right) 
+  \quad \mbox{in } \Lambda_h.
+\end{equation}
+
+\section{The \ocamlpiiil\ implementation}
+%
+% the coordination code is simple enough to be presented in extenso
+% (comparer avec MPI?)
+
+We studied so far a domain decomposition method for non-matching grids. To
+perform the numerical tests, we programmed in {\tt C++} the subdomain solver
+and added another layer to perform the coupling between the subdomains. We call
+this a \emph{direct} simulation. In this section we present a way of coupling
+the subdomain solver via an external program written in OCamlP3L. 
+\subsection{Presentation}
+We used the modules (Seqp3l, Parp3l, Grap3l) written in OCaml and denoted by
+OCamlP3l, cf.~\cite{Ocamlp3lMlw98} and {\tt http://www.ocamlp3l.org/}.
+OCamlP3l is a library that allows to write parallel programs using OCaml
+according to skeleton models. This provides a very brief description of the
+parallel structure of a program following the ideas of \cite{skeletoncole89}.
+At first our main goal was just to {\it couple} some applications (written in
+{\tt C, C++} or {\tt Fortran}) and the ability of OCamlP3L to couple {\it and
+  parallelize} the applications appeared as an interesting extra feature to us.
+It was particularly convenient that the parallel execution of our applications
+required no extra development, once the sequential program is validated.
+
+\subsection{Basic skeletons}
+
+For the present study, we have used 4 of the basic skeletons provided by the
+OCamlP3l environment.  The {\tt mapvector} skeleton encapsulates the parallel
+execution of a skeleton over the components of a vector on a given number of
+processes, typically the computation on each subdomain.  The {\tt loop}
+skeleton is recursive, it encapsulates the repeated execution of a skeleton
+until some condition is false, typically an iterative algorithm as BiCGStab to
+solve a linear system.  The {\tt pipe} skeleton encapsulates the sequential
+composition of two skeletons.  And the {\tt seq} skeleton encapsulates the
+execution of a function in a sequential process.
+
+The external encapsulation is performed by the function {\tt startstop}.
+It encapsulates a skeleton by generating the input data and executing
+post-processing, this defines an OCamlP3l network.
+
+The {\tt pardo} function is used to call the (parallel) execution of a valid
+OCamlP3l network defined by a {\tt startstop} call.
+
+\subsection{Compilation}
+
+To compile a network, one can use the tool {\tt ocampl3lcc} with one
+of the 3 options {\tt -seq} (for sequential), {\tt -par} (for
+parallel) or {\tt -gra} (for graphics). The purpose of the sequential
+compilation is to run the program sequentially on one machine, or to
+test the logic of the implemented algorithm with all the usual
+sequential debugging tools. The graphics mode allows to get a picture
+of the processor network described by the {\tt P3l} skeleton expression,
+and it is useful to grasp the parallel structure of the program. The
+parallel option allows to run in parallel the program, after debugging
+in sequential and a simple recompilation.
+
+\subsubsection*{OCaml coupling program}
+
+We briefly describe the main program of the coupling code defined with the
+function {\tt startstop} taking three input arguments. We want to point out
+that we wrote a program based on a very simple algorithm and the resulting
+coupling code is very short (about 170 lines), thanks to the conciseness of
+the OCaml language and of the OCamlP3L environment.
+
+\begin{figure}[htb]
+  \begin{center} 
+%    \includegraphics[width=6.2cm]{figures/RESU1}
+%    \includegraphics[width=6.2cm]{figures/RESU10} \\
+%    \includegraphics[width=6.2cm]{figures/RESU40}
+%    \includegraphics[width=6.2cm]{figures/speed-up-eng} 
+\end{center}
+    \caption{A computation with 25 subdomains (the subdomains are
+    square and have their own color). Initial solution (up left),
+    solution computed after 10~iterations (up right) and final
+    solution after 40~iterations (down left). The analytic solution is
+    depicted in red.  Down right: speed up for 10 processors with
+    refined grids: from 100$\times$100 cells up to 1400$\times$1400
+    cells.}  \label{f:conv}
+\end{figure}
+
+The first argument is used to initialize the coupling. It generates
+the boundary conditions for each subdomain. The second argument
+finalizes the computations and prints the results. The third argument
+describes the structure of the coupling. The algorithm that makes the
+coupling is defined here. 
+
+For these first experiments we chose a very simple example of overlapping
+domain decomposition fixed point algorithm, using Dirichlet boundary
+conditions, with matching and structured grids (Schwarz algorithm, see for
+instance \cite{MR1857663} or \cite{MR95b:65147}). We do not discuss this
+algorithm in this paper, but we simply remark that it is particularly easy to
+program on a structured grid and thus was a good starting point to test the
+coupling through OCamlP3L. Obviously it is not the algorithm that we intend to
+use to make some more physical simulations.
+
+The structure of the third argument is a loop. At each iteration, the program
+solves on {\tt nbproc} processes a subdomain problem and returns as output a
+vector of interface conditions. These interface conditions are taken as input
+of a projection function {\tt proj} from a subdomain to its neighbor and then
+the current result is plotted with {\tt plot}.
+\begin{verbatim}
+let program () = 
+  startstop
+    (generate_input_stream, ignore)
+    (print_result, ignore, ignore)
+    (loop (convergence, mapvector (seq (computation_on_a_subdomain), nbproc)
+      ||| seq (proj) ||| seq (plot)))
+in
+pardo program;;
+\end{verbatim}
+
+\subsubsection*{Subdomain solver program (in C)}
+
+The program that solves a subdomain problem has the following structure. It
+reads on the standard input the vector containing the input Dirichlet boundary
+conditions, solves the Poisson problem, and then returns on the standard output
+the vector containing the computed output vectors. Then it waits for another
+input vector.
+The standard input and
+output are redirected to the ones of the coupling program.
+
+\subsection{Results}
+\label{ss:dd-not}
+
+
+The tests that are presented were performed on the unit square
+$\Omega=[0,1]\times[0,1]$, divided into 5$\times$5 square subdomains with
+regular matching grids. The overlap is made up of 2 cells. The evolution of the
+solution for different iterations in the fixed point algorithm is presented in
+Figure~\ref{f:conv}.
+
+In Figure~\ref{f:conv} (down right), we can notice that we obtained a
+speed up of order 7 on 10 processors. This is a reasonable results
+considering that the implementation is not optimised at all. The speed
+up seem unsensitive to the number of cells. This means that we did not
+detected in this experiment the drawback of this simple algorithm: the
+projection phase is performed with only one processor and can produce
+delays due to communication overhead.
+
+\section{Evaluation of the results}
+%
+% flexibility of the parfun and colors, speedup
+
+
+\section{Conclusions and Future work}
+%
+% real world testing: oil
+% auto-couplage
+
+We presented in detail a nonoverlapping domain decomposition method for non
+matching meshes based on Robin interface conditions. The matrix-free matrix
+vector product can be easily implemented with the details provided. 
+Two 2D numerical experiments illustrate the good
+behavior of the method, particularly when the grids are nested, but not
+necessarily. They also show that it can be applied to simulate the flow around
+a nuclear waste disposal. Some more realistic 3D experiments are under way.
+
+We also presented preliminary results of code coupling using the OCamlP3L
+environment written in the OCaml language. The final goal is to couple codes
+that solve different physics, or the same problem on different subdomains. The
+first tests we performed are based on the very simple overlapping Schwarz
+domain decomposition algorithm. The coupling consists in linking the subdomain
+solvers. The results are produced with a particularly short coupling program.
+The program can be executed in parallel, thus taking advantage of the natural
+parallel properties of the domain decomposition method, with no extra
+development cost: it only requires a simple recompilation. All this seems very
+promising.
+
+What we are working on now is the implementation of the 3D domain decomposition
+method with non matching grids in the coupling code. Comparisons will be made
+between the direct simulation and the computation using code coupling with
+OCamlP3L, in terms of efficiency in solving the global problem, and in terms of
+time required to develop the programs.

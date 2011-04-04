@@ -1,0 +1,29 @@
+In a skeleton based parallel programming model 
+\cite{cole-th,ic-parle-93-1,fgcs-firenze} a set of \textit{skeletons},
+i.e. of second order functionals modelling common parallelism
+exploitation patterns are provided to the user/programmer. The
+programmer must use the skeletons to give parallel structure to
+an application and  uses a plain sequential language to
+express the sequential portions of the parallel application as
+parameters to the skeletons. He/she has no other way to express
+parallel activities but skeletons: no explicit process creation,
+scheduling, termination, no communication promimitives, no shared
+memory, no notion of being executing a program onto a parallel
+architecture at all.
+
+\ocamlpiiil\ is a programming environment that allows to write parallel
+programs in \ocaml\footnote{See URL
+  \texttt{http://pauillac.inria.fr/ocaml/}} according to the skeleton
+model supported by the parallel language \pppl\footnote{See URL
+  \texttt{http://www.di.unipi.it/.susanna/p3l.html}}, provides
+seamless integration of parallel programming and functional
+programming and advanced features like sequential logical debugging
+(i.e. functional debugging of a parallel program via execution of the
+architecture at allparallel code onto a
+sequential machine) of parallel programs and strong typing, useful
+both in teaching parallel programming and in building of
+full-scale applications\footnote{See URL
+  \texttt{http://qui.di.unipi.it/ocamlp3l.html} you will find relevant
+  information, up to date references, documentation, examples,
+  distribution code and dynamic web pages showcasing the \ocamlpiiil\
+  features.}.

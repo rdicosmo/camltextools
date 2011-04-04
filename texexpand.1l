@@ -1,0 +1,84 @@
+.TH TEXEXPAND 1L "26 October 2003" "Roberto Di Cosmo"
+.SH NAME
+texexpand \- a filter to expand a TeX document into one single .tex file.
+.SH SYNOPSIS
+.B texexpand
+[ \fB\-cbwx\fR ] [ \fIfilename\fR[.tex] ... ]
+.SH DESCRIPTION
+.I Texexpand
+(OCaml Version 1.0)
+reads each file of a 
+.I TeX
+document in sequence, removes all comments
+and writes the remainder on the standard output.
+By default,
+.I texexpand
+follows \\input commands.
+If a file cannot be opened, a warning message is
+printed and the command is ignored.
+If no input file is given on the command line,
+.I texexpand
+reads from standard input.
+.PP
+The
+.B \-c
+option can be used to have texexpand echo comments, that are stripped by default.
+.PP
+The
+.B \-b
+option can be used to have texexpand insert the .bbl file created by 
+.I BibTeX 
+if this is available.
+.PP
+If the
+.B \-w
+flag is given, the output is a word list, one `word' (string of two or more
+letters and apostrophes beginning with a letter)
+per line, and all other characters ignored.
+Without \fB\-w\fR the output follows the original,
+with the deletions mentioned above.  Newline characters are
+preserved where possible
+so that the lines of output match the input as closely as possible.
+.PP
+The
+.B \-x
+option can be used to have
+.I texexpand
+insert in the output enough information
+(in TeX comments) to rebuild the original file structure by calling the
+companion perl script
+.I texunexpand.
+.PP
+The TEXINPUTS environment variable is used to find \\input and \\include
+files.
+.SH SEE ALSO
+tex(1L), texunexpand(1L)
+.SH DIAGNOSTICS
+Nesting of \\input is allowed but the number of opened files must not
+exceed the system's limit on the number of simultaneously opened files.
+.I Texexpand
+ignores unrecognized option characters after printing a warning message.
+.SH AUTHOR
+Roberto Di Cosmo, roberto@dicosmo.org, http://www.dicosmo.org
+.PP 
+Uses ideas from 
+.I Detex
+by Daniel Trinkle, Computer Science Department, Purdue University
+.SH BUGS
+.I Texexpand
+is not a complete
+.I TeX
+interpreter, so it cannot know if an input command inside a conditional
+.I TeX
+macro must really be expanded. This can produce an output that cannot be properly
+compiled, usually in variations of something like
+.PP
+\\def\\ignore#1{\\relax}
+.PP
+\\def\\noignore#1{\\relax}
+.PP
+\\ignore{\\input{file1}}
+.PP
+\\noignore{\\input{file2}}
+.PP
+Suggestions for improvements are encouraged.

@@ -1,0 +1,8 @@
+This is an OCaml re-implementation of the texexpand and delatex utilities
+that were commonplace in the late 1990's on all TeX/LaTeX user machines.
+
+The current version provides various enhanced features (like automatic
+inclusion of the bibliography, and a mechanism to produce a self-contained
+source file that can be broken again into parts using the -b option).
+
+--Roberto Di Cosmo <roberto@dicosmo.org>

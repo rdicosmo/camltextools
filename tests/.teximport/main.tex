@@ -1,0 +1,111 @@
+% Document Type: LaTeX
+% Master File: tests.tex
+\documentclass{article}
+\usepackage{a4}
+\usepackage{alltt}
+\usepackage{graphicx}
+\usepackage{epic,eepic}
+\usepackage{amssymb}
+
+\newcommand{\run}{{\mathbb R}}
+\newcommand{\nun}{{\mathbb N}}
+\newcommand{\bral}{\left<}
+\newcommand{\brar}{\right>}
+\newcommand{\Th}[1]{\mathcal{T}^{h}_{#1}}
+\newcommand{\Sh}[1]{\mathcal{S}^{h}_{#1}}
+\newcommand{\Nui}[1]{{\mathcal N}_{#1}}
+\newcommand{\ovl}{\overline}
+\newcommand{\dps}{\displaystyle}
+\newcommand{\Hdiv}[1]{{\cal H}(\mbox{div},#1)}
+\newcommand{\p}{\partial}
+\newcommand{\nab}{\mbox{\boldmath $\nabla$}}
+\newcommand{\ocamlpiiil}{{\sf OcamlP3l}}
+\newcommand{\ocaml}{{\sf Ocaml}}
+\newcommand{\pppl}{{\sf p3l}}
+
+\title{Coupling numerical codes using the \ocamlpiiil\ functional parallel programming system
+       \thanks{The OcamlP3l system has been partially funded by a Galileo bilateral France-Italy project. }}
+\author{Fran\c{c}ois Cl\'ement, Roberto Di Cosmo, Vincent Martin, Pierre Weis, Arnaud Vodicka}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Writing parallel programs is not easy, and debugging them is usually
+  a nightmare.  To cope with these difficulties, a structured approach
+  to parallel programs using skeletons and template based compiler
+  techniques has been developed over the past years by several
+  researchers, including the P3L group in Pisa. The \ocamlpiiil\ 
+  system marries the Ocaml functional programming language with the
+  P3L skeletons, yielding a powerful parallel programming environment,
+  that has evolved over the years.
+
+  In this paper, we report on the successful application of the \ocamlpiiil\
+  in the field of scientific computing, where the system has been used to 
+  solve the problem of coupling numerical codes, obtaining parallelization
+  for free.
+
+  The interaction has been extremely fruitful, as, in the process of solving the
+  coupling problem, a wealth of new ideas have emerged on the design of the
+  system, which are incorporated in the current version of  \ocamlpiiil.
+
+\end{abstract}
+
+\section{Introduction and Overview}
+
+\include{introduction}
+
+%
+% partie \ocamlpiiil
+%
+\include{caml}
+
+%
+% partie numerique
+%
+\include{estime}
+
+% in conclusions\ldots{}
+% stream manipulation inside user functions
+
+\bibliographystyle{alpha}
+
+\bibliography{jfp}
+% *****EXPORTBEGS: \bibliography{main.bbl}
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DDCLP98}
+
+\bibitem[Col89]{cole-th}
+M.~Cole.
+\newblock {\em {Algorithmic Skeletons: Structured Management of Parallel
+  Computations}}.
+\newblock Research Monographs in Parallel and Distributed Computing. Pitman,
+  1989.
+
+\bibitem[DDCLP98]{Ocamlp3lMlw98}
+Marco Danelutto, Roberto Di~Cosmo, Xavier Leroy, and Susanna Pelagatti.
+\newblock Parallel functional programming with skeletons: the ocamlp3l
+  experiment.
+\newblock {\em The ML Workshop}, 1998.
+
+\bibitem[DFH{\etalchar{+}}93]{ic-parle-93-1}
+J.~Darlington, A.~J. Field, P.~G. Harrison, P.~H.~J. Kelly, D.~W.~N. Sharp, and
+  Q.~Wu.
+\newblock {Parallel Programming Using Skeleton Functions}.
+\newblock In {\em PARLE'93}, pages 146--160. Springer, 1993.
+\newblock LNCS No. 694.
+
+\bibitem[DGTY95]{darli-to-1}
+J.~Darlington, Y.~Guo, H.~W. To, and J.~Yang.
+\newblock {Parallel Skeletons for Structured Composition}.
+\newblock In {\em Fifth ACM SIGPLAN Symposium on Principles and Practice of
+  Parallel Programming}. ACM Press, July 1995.
+
+\bibitem[DMO{\etalchar{+}}92]{fgcs-firenze}
+M.~Danelutto, R.~Di Meglio, S.~Orlando, S.~Pelagatti, and M.~Vanneschi.
+\newblock A methodology for the development and support of massively parallel
+  programs.
+\newblock {\em Future Generation Computer Systems}, 8(1--3):205--220, July
+  1992.
+
+\end{thebibliography}

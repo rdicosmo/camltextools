@@ -1,0 +1,6 @@
+26/10/2003: RDC:
+	- option -w : what for? 
+	- make texdepend work!
+	- test on some extensive corpus, with texunexpand :-)
+	- handle \% (now taken as a comment)
+
