@@ -1,11 +1,19 @@
 #!/usr/bin/perl
-print STDERR "Manca la parte help etc... da fare ...\n\n\n";
-
 #
-# explode a file obtained from texexpand -x
+#
+# Explodes a LaTeX file obtained from texexpand -x, and then compares
+# the resulting files with the files existing on the current machines,
+# removing the unmodified ones.
+#
+# Useful when collaborating with a remote author that is not particularly
+# familiar with version control and/or basic tools like tar.
+#
+# (c) Roberto Di Cosmo <roberto@dicosmo.org> 2003-2011
+# Distributend under the GPL Licence, V2 or later
 #
 
 # SUBROUTINES
+
 #
 # get the file name from a path
 #
