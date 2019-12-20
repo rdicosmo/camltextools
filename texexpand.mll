@@ -48,7 +48,7 @@ let dptblanks lgt = String.make lgt ' ';;
 
 let launch_command b name =
  let ic = Unix.open_process_in name in
- let ib = String.create 1024 in
+ let ib = Bytes.create 1024 in
  try
    while true do
     let n = input ic ib 0 1024 in
@@ -295,7 +295,7 @@ let inputFile fn parser = getfile fn parser "input";;
 ******)
 
 let includeFile fn parser =
-  if (!incList=[] or (List.mem fn !incList)) then getfile fn parser "include";;
+  if (!incList=[] || (List.mem fn !incList)) then getfile fn parser "include";;
 
 }
 
