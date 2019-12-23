@@ -53,7 +53,7 @@ let launch_command b name =
    while true do
     let n = input ic ib 0 1024 in
      if n=0 then raise End_of_file
-     else Buffer.add_string b (String.sub ib 0 n)
+     else Buffer.add_string b (String.sub (Bytes.to_string ib) 0 n)
     done;
     2
  with
